@@ -4,18 +4,21 @@ import {
   Checkbox,
   FormControlLabel,
   FormGroup,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import dayjs from "dayjs";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddEventForm = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-  const { register, handleSubmit, control, reset } = useForm();
+  const { register, handleSubmit, control, reset, setFocus } = useForm();
   const queryClient = useQueryClient();
 
   const { data } = useQuery({
@@ -32,10 +35,16 @@ const AddEventForm = () => {
   });
 
   useEffect(() => {
-    console.log(eventDetails);
     if (id && eventDetails)
-      reset({ ...eventDetails, date: new Date().toJSON() });
+      reset({
+        ...eventDetails,
+        date: dayjs(eventDetails.date).format("YYYY-MM-DD"),
+      });
   }, [id, eventDetails]);
+
+  useEffect(() => {
+    setFocus("title");
+  }, []);
 
   const createEvent = async (formData) => {
     try {
@@ -51,13 +60,13 @@ const AddEventForm = () => {
   const mutation = useMutation({
     mutationFn: createEvent,
     onSuccess: () => {
-      queryClient.invalidateQueries("events");
+      queryClient.invalidateQueries(["events"]);
+      setFocus("title");
+      reset();
     },
   });
 
-  const onSubmit = (data) => {
-    mutation.mutate(data);
-  };
+  const onSubmit = (data) => mutation.mutate(data);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -67,7 +76,6 @@ const AddEventForm = () => {
         fullWidth
         margin="normal"
         {...register("title")}
-        value={"afa"}
       />
       <TextField {...register("date")} type="date" fullWidth margin="normal" />
       <Controller
@@ -106,9 +114,19 @@ const AddEventForm = () => {
           {...register("opts.dining")}
         />
       </FormGroup>
-      <Button type="submit" variant="contained" disabled={mutation.isLoading}>
-        Create
-      </Button>
+      <Stack sx={{ flexDirection: "row", gap: ".25rem" }}>
+        <Button
+          type="button"
+          variant="contained"
+          disabled={mutation.isLoading}
+          onClick={() => navigate("/events")}
+        >
+          Back To Events
+        </Button>
+        <Button type="submit" variant="contained" disabled={mutation.isLoading}>
+          Create
+        </Button>
+      </Stack>
       {mutation.isError && (
         <Typography variant="body1" color="error">
           {mutation.error.message}

@@ -1,4 +1,4 @@
-import { Stack } from "@mui/material";
+import { Stack, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
@@ -18,18 +18,21 @@ import CustomerLoginForm from "./components/CustomerLoginForm";
 import CustomerRegistrationForm from "./components/CustomerRegistration";
 import EventList from "./components/EventList";
 import AuthCtxProvider, { useAuthCtx } from "./contexts/AuthContext";
+import theme from "./theme";
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthCtxProvider>
-        <Router>
-          <AppRoutes />
-        </Router>
-      </AuthCtxProvider>
-    </QueryClientProvider>
+    <ThemeProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <AuthCtxProvider>
+          <Router>
+            <AppRoutes />
+          </Router>
+        </AuthCtxProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 }
 

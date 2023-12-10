@@ -1,5 +1,7 @@
 import { DeleteIcon, PencilIcon } from "@icons/material";
 import {
+  Box,
+  Button,
   Chip,
   CircularProgress,
   IconButton,
@@ -13,8 +15,9 @@ import {
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const EventList = () => {
   const navigate = useNavigate();
@@ -53,7 +56,14 @@ const EventList = () => {
   return (
     <div>
       <Toaster />
-      <Typography variant="h4">Events</Typography>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Box>
+          <Typography variant="h4">Events</Typography>
+        </Box>
+        <Box>
+          <Button href="./new">Add Event</Button>
+        </Box>
+      </Stack>
       <Table>
         <TableHead>
           <TableRow>
@@ -68,16 +78,9 @@ const EventList = () => {
           {(events ?? []).map(({ title, _id, cust, date, opts }) => (
             <TableRow key={_id}>
               <TableCell>{title}</TableCell>
-              <TableCell>{date}</TableCell>
+              <TableCell>{dayjs(date).format("DD MMM YY")}</TableCell>
               <TableCell>{cust.mobileNo}</TableCell>
               <TableCell>
-                {/* {Object.keys(opts).map((el, i) =>
-                  opts[el] ? (
-                    <CheckCircleIcon key={i} />
-                  ) : (
-                    <CheckCircleOutlineIcon key={i} />
-                  )
-                )} */}
                 <Stack sx={{ gap: ".25rem", flexDirection: "row" }}>
                   {Object.keys(opts).map((el, i) => (
                     <Chip
