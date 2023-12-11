@@ -111,6 +111,10 @@ const AppRoutes = () => {
         <Route path="new" element={<AddEventForm />} />
         <Route path=":id/edit" element={<AddEventForm />} />
       </Route>
+      <Route path="/customer" element={<ProtectedRoute />}>
+        {/* <Route index element={<EventList />} /> */}
+        <Route path="new" element={<CustomerRegistrationForm />} />
+      </Route>
     </Routes>
   );
 };

@@ -17,9 +17,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useAuthCtx } from "../contexts/AuthContext";
 
 const EventList = () => {
+  const { setAuth } = useAuthCtx();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const {
@@ -31,6 +33,14 @@ const EventList = () => {
     queryFn: async () => {
       const response = await axios.get("/api/event/all");
       return response.data;
+    },
+  });
+
+  const { mutate: logout } = useMutation({
+    mutationFn: async () => await axios.get("/api/auth/logout"),
+    onSuccess() {
+      setAuth();
+      navigate("/login");
     },
   });
 
@@ -62,6 +72,10 @@ const EventList = () => {
         </Box>
         <Box>
           <Button href="./new">Add Event</Button>
+          <Button href="/customer/new">Add Customer</Button>
+          <Button onClick={logout} variant="contained" disableElevation>
+            Logout
+          </Button>
         </Box>
       </Stack>
       <Table>
