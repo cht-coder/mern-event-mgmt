@@ -1,9 +1,8 @@
-import { Stack, ThemeProvider } from "@mui/material";
+import { Button, Stack, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
 import {
-  Link,
   Navigate,
   Outlet,
   Route,
@@ -11,12 +10,14 @@ import {
   Routes,
 } from "react-router-dom";
 import "./App.css";
+import cover from "./assets/images/11582499_21034617.jpg";
 import AddEventForm from "./components/AddEvent";
 import AdminLoginForm from "./components/AdminLoginForm";
 import AdminRegistrationForm from "./components/AdminRegistration";
 import CustomerLoginForm from "./components/CustomerLoginForm";
 import CustomerRegistrationForm from "./components/CustomerRegistration";
 import EventList from "./components/EventList";
+import Home from "./components/Home";
 import AuthCtxProvider, { useAuthCtx } from "./contexts/AuthContext";
 import theme from "./theme";
 
@@ -61,7 +62,7 @@ const AppRoutes = () => {
         path="/"
         index
         element={
-          <Navigate to={auth && !isLoading ? "/events" : "/login"} replace />
+          auth && !isLoading ? <Navigate to="/events" replace /> : <Home />
         }
       />
       <Route path="/login" element={<NonAuthRoute />}>
@@ -72,12 +73,37 @@ const AppRoutes = () => {
               <Stack
                 sx={{
                   alignItems: "center",
-                  flexDirection: "row",
+                  justifyContent: "center",
+                  flexDirection: "column",
                   gap: "1rem",
+                  width: "100%",
+                  minHeight: "100vh",
+                  background: "url(" + cover + ") center center no-repeat",
+                  backgroundSize: "cover",
                 }}
               >
-                <Link to="./admin">Admin Login</Link>
-                <Link to="./customer">Customer Login</Link>
+                <Button
+                  variant="contained"
+                  href="./admin"
+                  sx={{
+                    width: "15rem",
+                    background: "rgba(255, 255, 255, .5)",
+                    padding: "1rem",
+                  }}
+                >
+                  Admin Login
+                </Button>
+                <Button
+                  variant="contained"
+                  href="./customer"
+                  sx={{
+                    width: "15rem",
+                    background: "rgba(255, 255, 255, .5)",
+                    padding: "1rem",
+                  }}
+                >
+                  Customer Login
+                </Button>
               </Stack>
             </>
           }
@@ -93,12 +119,37 @@ const AppRoutes = () => {
               <Stack
                 sx={{
                   alignItems: "center",
-                  flexDirection: "row",
+                  justifyContent: "center",
+                  flexDirection: "column",
                   gap: "1rem",
+                  width: "100%",
+                  minHeight: "100vh",
+                  background: "url(" + cover + ") center center no-repeat",
+                  backgroundSize: "cover",
                 }}
               >
-                <Link to="./admin">Admin Login</Link>
-                <Link to="./customer">Customer Login</Link>
+                <Button
+                  variant="contained"
+                  href="./admin"
+                  sx={{
+                    width: "15rem",
+                    background: "rgba(255, 255, 255, .5)",
+                    padding: "1rem",
+                  }}
+                >
+                  Admin Registration
+                </Button>
+                <Button
+                  variant="contained"
+                  href="./customer"
+                  sx={{
+                    width: "15rem",
+                    background: "rgba(255, 255, 255, .5)",
+                    padding: "1rem",
+                  }}
+                >
+                  Customer Registration
+                </Button>
               </Stack>
             </>
           }

@@ -69,6 +69,7 @@ const AddEventForm = () => {
   const onSubmit = (data) => mutation.mutate(data);
 
   return (
+    <div className="form">
     <form onSubmit={handleSubmit(onSubmit)}>
       <Typography variant="h4">Create Event</Typography>
       <TextField
@@ -133,6 +134,7 @@ const AddEventForm = () => {
         </Typography>
       )}
     </form>
+    </div>
   );
 };
 
