@@ -1,9 +1,14 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
+  Alert,
   Autocomplete,
+  Box,
   Button,
   Checkbox,
+  FormControl,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Stack,
   TextField,
   Typography,
@@ -14,11 +19,41 @@ import dayjs from "dayjs";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+import * as yup from "yup";
+
+const eventSchema = yup.object({
+  title: yup.string().required().label("Event title"),
+  date: yup
+    .date()
+    .required()
+    .transform((val, oVal) => (oVal === "" ? undefined : val))
+    .label("Date"),
+  opts: yup.object({
+    hall: yup.bool().default(false),
+    dining: yup.bool().default(false),
+  }),
+  cust: yup.object().required().label("Customer"),
+});
 
 const AddEventForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { register, handleSubmit, control, reset, setFocus } = useForm();
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    setFocus,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      title: "",
+      date: dayjs().format("YYYY-MM-DD"),
+      opts: { hall: true, dining: false },
+      cust: null,
+    },
+    resolver: yupResolver(eventSchema),
+  });
   const queryClient = useQueryClient();
 
   const { data } = useQuery({
@@ -69,72 +104,105 @@ const AddEventForm = () => {
   const onSubmit = (data) => mutation.mutate(data);
 
   return (
-    <div className="form">
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Typography variant="h4">Create Event</Typography>
-      <TextField
-        label="Title"
-        fullWidth
-        margin="normal"
-        {...register("title")}
-      />
-      <TextField {...register("date")} type="date" fullWidth margin="normal" />
-      <Controller
-        name="cust"
-        control={control}
-        render={({ field: { onChange, onBlur, ref, value } }) => (
-          <Autocomplete
-            value={value}
-            options={data ?? []}
-            renderInput={(params) => <TextField {...params} inputRef={ref} />}
-            renderOption={(props, opt) => (
-              <div {...props} key={opt.c_id}>
-                {opt.mobileNo}
-              </div>
-            )}
-            getOptionLabel={(opt) => `${opt.mobileNo}`}
-            isOptionEqualToValue={(opt, val) => opt.c_id === val.c_id}
-            onChange={(e, val) => {
-              console.log(val);
-              onChange(val);
-            }}
-            onBlur={onBlur}
-          />
-        )}
-      />
-      <FormGroup sx={{ my: 2 }} row>
-        <FormControlLabel
-          control={<Checkbox />}
-          label="Hall"
-          {...register("opts.hall")}
-        />
-
-        <FormControlLabel
-          control={<Checkbox />}
-          label="Dining"
-          {...register("opts.dining")}
-        />
-      </FormGroup>
-      <Stack sx={{ flexDirection: "row", gap: ".25rem" }}>
-        <Button
-          type="button"
-          variant="contained"
-          disabled={mutation.isLoading}
-          onClick={() => navigate("/events")}
+    <Box
+      sx={{
+        padding: "5rem",
+        "& form": { display: "flex", flexDirection: "column", gap: "1rem" },
+      }}
+    >
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Typography
+          component="h2"
+          sx={{
+            fontSize: "1.25rem",
+            textTransform: "uppercase",
+            fontWeight: 700,
+          }}
         >
-          Back To Events
-        </Button>
-        <Button type="submit" variant="contained" disabled={mutation.isLoading}>
-          Create
-        </Button>
-      </Stack>
-      {mutation.isError && (
-        <Typography variant="body1" color="error">
-          {mutation.error.message}
+          Create Event
         </Typography>
-      )}
-    </form>
-    </div>
+        <TextField
+          label="Title"
+          fullWidth
+          error={!!errors?.title?.message}
+          helperText={errors?.title?.message ?? ""}
+          {...register("title")}
+        />
+        <TextField
+          {...register("date")}
+          type="date"
+          fullWidth
+          error={!!errors?.date?.message}
+          helperText={errors?.date?.message ?? ""}
+        />
+        <Controller
+          name="cust"
+          control={control}
+          render={({
+            field: { onChange, onBlur, ref, value },
+            fieldState: { error },
+          }) => (
+            <FormControl error={!!error?.message} fullWidth>
+              <Autocomplete
+                value={value}
+                options={data ?? []}
+                renderInput={(params) => (
+                  <TextField {...params} inputRef={ref} />
+                )}
+                renderOption={(props, opt) => (
+                  <div {...props} key={opt.c_id}>
+                    {opt.mobileNo}
+                  </div>
+                )}
+                getOptionLabel={(opt) => `${opt.mobileNo}`}
+                isOptionEqualToValue={(opt, val) =>
+                  opt.c_id === (val.c_id || val._id)
+                }
+                onChange={(e, val) => {
+                  console.log(val);
+                  onChange(val);
+                }}
+                onBlur={onBlur}
+              />
+              <FormHelperText>{error?.message ?? ""}</FormHelperText>
+            </FormControl>
+          )}
+        />
+        <FormGroup sx={{ my: 2 }} row>
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Hall"
+            {...register("opts.hall")}
+          />
+
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Dining"
+            {...register("opts.dining")}
+          />
+        </FormGroup>
+        <Stack sx={{ flexDirection: "row", gap: ".25rem" }}>
+          <Button
+            type="button"
+            variant="contained"
+            disabled={mutation.isLoading}
+            onClick={() => navigate("/events")}
+          >
+            Back To Events
+          </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={mutation.isLoading}
+          >
+            Create
+          </Button>
+        </Stack>
+        {mutation.isError && (
+          <Alert severity="error">{mutation.error.message}</Alert>
+        )}
+      </form>
+    </Box>
   );
 };
 

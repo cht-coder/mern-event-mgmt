@@ -9,6 +9,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -66,70 +67,105 @@ const EventList = () => {
   return (
     <div>
       <Toaster />
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="space-between"
+        px={2}
+        py={1}
+      >
         <Box>
-          <Typography variant="h4">Events</Typography>
+          <Typography
+            component="h1"
+            sx={{
+              fontSize: "2rem",
+              textTransform: "uppercase",
+              fontWeight: 700,
+            }}
+          >
+            Events
+          </Typography>
         </Box>
-        <Box>
-          <Button href="./new">Add Event</Button>
-          <Button href="/customer/new">Add Customer</Button>
-          <Button onClick={logout} variant="contained" disableElevation>
-            Logout
-          </Button>
-        </Box>
+        <Stack
+          sx={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: ".5rem",
+          }}
+        >
+          <Box>
+            <Button href="./new">Add Event</Button>
+          </Box>
+          <Box>
+            <Button href="/customer/new">Add Customer</Button>
+          </Box>
+          <Box>
+            <Button onClick={logout} variant="contained" disableElevation>
+              Logout
+            </Button>
+          </Box>
+        </Stack>
       </Stack>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>Title</TableCell>
-            <TableCell>Date</TableCell>
-            <TableCell>Customer</TableCell>
-            <TableCell>Options</TableCell>
-            <TableCell>Actions</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {(events ?? []).map(({ title, _id, cust, date, opts }) => (
-            <TableRow key={_id}>
-              <TableCell>{title}</TableCell>
-              <TableCell>{dayjs(date).format("DD MMM YY")}</TableCell>
-              <TableCell>{cust.mobileNo}</TableCell>
-              <TableCell>
-                <Stack sx={{ gap: ".25rem", flexDirection: "row" }}>
-                  {Object.keys(opts).map((el, i) => (
-                    <Chip
-                      key={i}
-                      label={`${el}`.toUpperCase()}
-                      color={opts[el] ? "success" : "default"}
-                      sx={{ borderRadius: "3px" }}
-                    />
-                  ))}
-                </Stack>
-              </TableCell>
-              <TableCell>
-                <IconButton onClick={() => navigate(`./${_id}/edit`)}>
-                  <PencilIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => {
-                    toast.promise(
-                      deleteEvent(_id),
-                      {
-                        loading: "loading",
-                        error: "error",
-                        success: "success",
-                      },
-                      { position: "bottom-left" }
-                    );
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </TableCell>
+      <TableContainer sx={{ p: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow sx={{ "& .MuiTableCell-root": { fontWeight: 600 } }}>
+              <TableCell>Title</TableCell>
+              <TableCell>Date</TableCell>
+              <TableCell>Customer</TableCell>
+              <TableCell>Options</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {(events ?? []).map(({ title, _id, cust, date, opts }) => (
+              <TableRow key={_id}>
+                <TableCell>{title}</TableCell>
+                <TableCell>{dayjs(date).format("DD MMM YY")}</TableCell>
+                <TableCell>{cust.mobileNo}</TableCell>
+                <TableCell>
+                  <Stack sx={{ gap: ".25rem", flexDirection: "row" }}>
+                    {Object.keys(opts).map((el, i) => (
+                      <Chip
+                        key={i}
+                        label={`${el}`.toUpperCase()}
+                        color={opts[el] ? "success" : "default"}
+                        sx={{ borderRadius: "3px" }}
+                      />
+                    ))}
+                  </Stack>
+                </TableCell>
+                <TableCell>
+                  <Stack sx={{ flexDirection: "row" }}>
+                    <IconButton
+                      sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
+                      onClick={() => navigate(`./${_id}/edit`)}
+                    >
+                      <PencilIcon />
+                    </IconButton>
+                    <IconButton
+                      sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
+                      onClick={() => {
+                        toast.promise(
+                          deleteEvent(_id),
+                          {
+                            loading: "loading",
+                            error: "error",
+                            success: "success",
+                          },
+                          { position: "bottom-left" }
+                        );
+                      }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </Stack>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
