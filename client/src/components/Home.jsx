@@ -16,8 +16,8 @@ const Home = () => {
             alt="First slide"
           />
           <Carousel.Caption>
-            <h3>Your Carousel Title</h3>
-            <p>Your carousel description goes here.</p>
+            <h3>MARRIAGE EVENT PLANNER</h3>
+            <p>HEARTY WELCOME</p>
           </Carousel.Caption>
         </Carousel.Item>
         <Carousel.Item>
@@ -27,8 +27,8 @@ const Home = () => {
             alt="Second slide"
           />
           <Carousel.Caption>
-            <h3>Your Carousel Title 2</h3>
-            <p>Another carousel description.</p>
+            <h3>JOURNEY TO JOYFUL UNION</h3>
+            <p>BE A HAPPY COUPLE</p>
           </Carousel.Caption>
         </Carousel.Item>
         {/* Add more Carousel.Items for additional slides */}
