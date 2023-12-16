@@ -30,16 +30,20 @@ exports.loginAdmin = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({ adminId: admin._id }, "your_secret_key", {
-      expiresIn: 1e3 * 60 * 60 * 24 * 3,
-    });
+    const token = jwt.sign(
+      { adminId: admin._id, role: "ADMIN" },
+      "your_secret_key",
+      {
+        expiresIn: 1e3 * 60 * 60 * 24 * 3,
+      }
+    );
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
       maxAge: 1e3 * 60 * 60 * 24 * 3,
       signed: true,
     });
-    res.status(200).json({ token });
+    res.status(200).json({ token, role: "ADMIN" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

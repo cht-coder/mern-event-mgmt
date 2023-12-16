@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthCtx } from "../contexts/AuthContext";
 
 const EventList = () => {
-  const { setAuth } = useAuthCtx();
+  const { auth } = useAuthCtx();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const {
@@ -34,14 +34,6 @@ const EventList = () => {
     queryFn: async () => {
       const response = await axios.get("/api/event/all");
       return response.data;
-    },
-  });
-
-  const { mutate: logout } = useMutation({
-    mutationFn: async () => await axios.get("/api/auth/logout"),
-    onSuccess() {
-      setAuth();
-      navigate("/login");
     },
   });
 
@@ -96,14 +88,11 @@ const EventList = () => {
           <Box>
             <Button href="./new">Add Event</Button>
           </Box>
-          <Box>
-            <Button href="/customer/new">Add Customer</Button>
-          </Box>
-          <Box>
-            <Button onClick={logout} variant="contained" disableElevation>
-              Logout
-            </Button>
-          </Box>
+          {auth?.data?.role === "ADMIN" && (
+            <Box>
+              <Button href="/customer/new">Add Customer</Button>
+            </Box>
+          )}
         </Stack>
       </Stack>
       <TableContainer sx={{ p: 2 }}>
@@ -112,7 +101,9 @@ const EventList = () => {
             <TableRow sx={{ "& .MuiTableCell-root": { fontWeight: 600 } }}>
               <TableCell>Title</TableCell>
               <TableCell>Date</TableCell>
-              <TableCell>Customer</TableCell>
+              {auth?.data?.role === "ADMIN" ? (
+                <TableCell>Customer</TableCell>
+              ) : null}
               <TableCell>Options</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -122,7 +113,9 @@ const EventList = () => {
               <TableRow key={_id}>
                 <TableCell>{title}</TableCell>
                 <TableCell>{dayjs(date).format("DD MMM YY")}</TableCell>
-                <TableCell>{cust.mobileNo}</TableCell>
+                {auth?.data?.role === "ADMIN" && (
+                  <TableCell>{cust.mobileNo}</TableCell>
+                )}
                 <TableCell>
                   <Stack sx={{ gap: ".25rem", flexDirection: "row" }}>
                     {Object.keys(opts).map((el, i) => (

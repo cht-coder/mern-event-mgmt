@@ -20,12 +20,14 @@ import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
+import { useAuthCtx } from "../contexts/AuthContext";
 
 const eventSchema = yup.object({
   title: yup.string().required().label("Event title"),
   date: yup
     .date()
     .required()
+    .min(dayjs().startOf("date").toDate(), "date must not be past")
     .transform((val, oVal) => (oVal === "" ? undefined : val))
     .label("Date"),
   opts: yup.object({
@@ -38,12 +40,14 @@ const eventSchema = yup.object({
 const AddEventForm = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { auth } = useAuthCtx();
   const {
     register,
     handleSubmit,
     control,
     reset,
     setFocus,
+    resetField,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -80,6 +84,11 @@ const AddEventForm = () => {
   useEffect(() => {
     setFocus("title");
   }, []);
+
+  useEffect(() => {
+    if (auth.data?.role === "CUSTOMER")
+      resetField("cust", { defaultValue: data?.[0] ?? null });
+  }, [auth]);
 
   const createEvent = async (formData) => {
     try {
@@ -154,6 +163,7 @@ const AddEventForm = () => {
                     {opt.mobileNo}
                   </div>
                 )}
+                disabled={auth?.data?.role === "CUSTOMER"}
                 getOptionLabel={(opt) => `${opt.mobileNo}`}
                 isOptionEqualToValue={(opt, val) =>
                   opt.c_id === (val.c_id || val._id)

@@ -1,3 +1,4 @@
+const { decode } = require("jsonwebtoken");
 const Event = require("../models/Event.model");
 
 exports.createEvent = async (req, res) => {
@@ -18,7 +19,10 @@ exports.createEvent = async (req, res) => {
 
 exports.getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find().populate("cust", "+mobileNo");
+    const decodedData = decode(req.signedCookies.token);
+    const events = await Event.find(
+      decodedData?.customerId ? { cust: decodedData.customerId } : {}
+    ).populate("cust", "+mobileNo");
     res.status(200).json(events);
   } catch (error) {
     res.status(500).json({ error: error.message });

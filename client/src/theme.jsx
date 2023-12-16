@@ -3,6 +3,7 @@ import LinkBehavior from "./components/LinkBehaviour";
 
 const theme = createTheme({
   typography: { fontFamily: "Poppins, sans-serif" },
+  palette: { primary: { main: "#2e2e2e" } },
   components: {
     MuiLink: {
       defaultProps: {

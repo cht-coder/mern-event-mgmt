@@ -25,8 +25,17 @@ exports.loginCustomer = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token = jwt.sign({ customerId: customer._id }, "your_secret_key");
-    res.status(200).json({ token });
+    const token = jwt.sign(
+      { customerId: customer._id, role: "CUSTOMER" },
+      "your_secret_key"
+    );
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 1e3 * 60 * 60 * 24 * 3,
+      signed: true,
+    });
+    res.status(200).json({ token, role: "CUSTOMER" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

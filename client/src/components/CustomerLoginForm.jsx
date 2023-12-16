@@ -3,8 +3,10 @@ import { Alert, Box, Button, TextField, Typography } from "@mui/material";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import cover from "../assets/images/table-newlyweds-with-lot-candles.jpg";
+import { useAuthCtx } from "../contexts/AuthContext";
 
 const customerLoginSchema = yup.object({
   mobileNo: yup.string().required().length(10).label("Mobile No."),
@@ -20,6 +22,8 @@ const customerLoginSchema = yup.object({
 });
 
 const CustomerLoginForm = () => {
+  const navigate = useNavigate();
+  const { setAuth } = useAuthCtx();
   const {
     register,
     handleSubmit,
@@ -37,7 +41,13 @@ const CustomerLoginForm = () => {
     }
   };
 
-  const mutation = useMutation({ mutationFn: loginCustomer });
+  const mutation = useMutation({
+    mutationFn: loginCustomer,
+    onSuccess(data) {
+      setAuth(data);
+      navigate("/events");
+    },
+  });
 
   const onSubmit = (data) => {
     mutation.mutate(data);
