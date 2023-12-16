@@ -1,4 +1,4 @@
-import { AppBar, Button, Stack, ThemeProvider } from "@mui/material";
+import { Button, Stack, ThemeProvider } from "@mui/material";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect } from "react";
@@ -46,7 +46,7 @@ const AppRoutes = () => {
     axios
       .get("/api/auth", { withCredentials: true })
       .then((data) => {
-        setAuth(data);
+        setAuth(data.data);
         // navigate("/events");
       })
       .catch((err) => {

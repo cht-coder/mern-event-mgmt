@@ -88,7 +88,7 @@ const EventList = () => {
           <Box>
             <Button href="./new">Add Event</Button>
           </Box>
-          {auth?.data?.role === "ADMIN" && (
+          {auth?.role === "ADMIN" && (
             <Box>
               <Button href="/customer/new">Add Customer</Button>
             </Box>
@@ -101,9 +101,7 @@ const EventList = () => {
             <TableRow sx={{ "& .MuiTableCell-root": { fontWeight: 600 } }}>
               <TableCell>Title</TableCell>
               <TableCell>Date</TableCell>
-              {auth?.data?.role === "ADMIN" ? (
-                <TableCell>Customer</TableCell>
-              ) : null}
+              {auth?.role === "ADMIN" ? <TableCell>Customer</TableCell> : null}
               <TableCell>Options</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -113,7 +111,7 @@ const EventList = () => {
               <TableRow key={_id}>
                 <TableCell>{title}</TableCell>
                 <TableCell>{dayjs(date).format("DD MMM YY")}</TableCell>
-                {auth?.data?.role === "ADMIN" && (
+                {auth?.role === "ADMIN" && (
                   <TableCell>{cust.mobileNo}</TableCell>
                 )}
                 <TableCell>

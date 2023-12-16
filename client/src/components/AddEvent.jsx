@@ -86,7 +86,7 @@ const AddEventForm = () => {
   }, []);
 
   useEffect(() => {
-    if (auth.data?.role === "CUSTOMER")
+    if (auth?.role === "CUSTOMER")
       resetField("cust", { defaultValue: data?.[0] ?? null });
   }, [auth]);
 
@@ -111,6 +111,7 @@ const AddEventForm = () => {
   });
 
   const onSubmit = (data) => mutation.mutate(data);
+  console.log(auth);
 
   return (
     <Box
@@ -163,7 +164,7 @@ const AddEventForm = () => {
                     {opt.mobileNo}
                   </div>
                 )}
-                disabled={auth?.data?.role === "CUSTOMER"}
+                disabled={auth?.role === "CUSTOMER"}
                 getOptionLabel={(opt) => `${opt.mobileNo}`}
                 isOptionEqualToValue={(opt, val) =>
                   opt.c_id === (val.c_id || val._id)
