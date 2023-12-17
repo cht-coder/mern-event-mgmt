@@ -102,7 +102,9 @@ const EventList = () => {
           </Box>
           {auth?.role === "ADMIN" && (
             <Box>
-              <Button href="/customer/new">Add Customer</Button>
+              <Button variant="contained" href="/customer/new" disableElevation>
+                Add Customer
+              </Button>
             </Box>
           )}
         </Stack>

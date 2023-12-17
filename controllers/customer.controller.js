@@ -1,6 +1,7 @@
 const Customer = require("../models/Customer.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { default: mongoose } = require("mongoose");
 
 exports.registerCustomer = async (req, res) => {
   try {
@@ -44,8 +45,13 @@ exports.loginCustomer = async (req, res) => {
 exports.getCombo = async (req, res) => {
   try {
     const custs = await Customer.aggregate()
+      .match(
+        req.user.role === "CUSTOMER"
+          ? { _id: new mongoose.Types.ObjectId(req.user.customerId) }
+          : {}
+      )
       .addFields({ c_id: "$_id" })
-      .project("-password -_id");
+      .project({ password: 0, _id: 0 });
     res.status(200).json({ success: true, data: custs });
   } catch (err) {}
 };

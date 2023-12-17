@@ -22,7 +22,11 @@ exports.getAllEvents = async (req, res) => {
     const decodedData = decode(req.signedCookies.token);
     const events = await Event.find(
       decodedData?.customerId ? { cust: decodedData.customerId } : {}
-    ).populate("cust", "+mobileNo");
+    ).populate({
+      path: "cust",
+      select: "-_id",
+      options: { projection: { c_id: "$_id", mobileNo: "$mobileNo" } },
+    });
     res.status(200).json(events);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -34,10 +38,11 @@ exports.getAllEvents = async (req, res) => {
  */
 exports.getById = async (req, res) => {
   try {
-    const events = await Event.findById(req.params.id).populate(
-      "cust",
-      "+mobileNo"
-    );
+    const events = await Event.findById(req.params.id).populate({
+      path: "cust",
+      select: "-_id",
+      options: { projection: { c_id: "$_id", mobileNo: "$mobileNo" } },
+    });
     res.status(200).json({ data: events });
   } catch (error) {
     console.log(error);

@@ -32,7 +32,7 @@ function AppHeader() {
             variant="h6"
             noWrap
             component="a"
-            href="/events"
+            href={auth ? "/events" : "/"}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -50,7 +50,7 @@ function AppHeader() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href={auth ? "/events" : "/"}
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },

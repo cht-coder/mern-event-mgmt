@@ -33,6 +33,7 @@ const eventSchema = yup.object({
   opts: yup.object({
     hall: yup.bool().default(false),
     dining: yup.bool().default(false),
+    decorations: yup.bool().default(false),
   }),
   cust: yup.object().required().label("Customer"),
 });
@@ -53,7 +54,7 @@ const AddEventForm = () => {
     defaultValues: {
       title: "",
       date: dayjs().format("YYYY-MM-DD"),
-      opts: { hall: true, dining: true },
+      opts: { hall: true, dining: true, decorations: true },
       cust: null,
     },
     resolver: yupResolver(eventSchema),
@@ -88,7 +89,7 @@ const AddEventForm = () => {
   useEffect(() => {
     if (auth?.role === "CUSTOMER")
       resetField("cust", { defaultValue: data?.[0] ?? null });
-  }, [auth]);
+  }, [auth, data]);
 
   const createEvent = async (formData) => {
     try {
@@ -204,6 +205,19 @@ const AddEventForm = () => {
             }
             label="Dining"
           />
+
+          <FormControlLabel
+            control={
+              <Controller
+                name="opts.decorations"
+                control={control}
+                render={({ field: { value, ...field } }) => (
+                  <Checkbox checked={value} {...field} />
+                )}
+              />
+            }
+            label="Decorations"
+          />
         </FormGroup>
         <Stack sx={{ flexDirection: "row", gap: ".25rem" }}>
           <Button
@@ -219,7 +233,7 @@ const AddEventForm = () => {
             variant="contained"
             disabled={mutation.isLoading}
           >
-            Create
+            {id ? "Update" : "Create"}
           </Button>
         </Stack>
         {mutation.isError && (
