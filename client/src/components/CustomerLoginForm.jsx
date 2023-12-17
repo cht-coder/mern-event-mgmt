@@ -5,7 +5,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
-import cover from "../assets/images/table-newlyweds-with-lot-candles.jpg";
+import cover from "../assets/images/admin-login-cover.jpg";
 import { useAuthCtx } from "../contexts/AuthContext";
 
 const customerLoginSchema = yup.object({
