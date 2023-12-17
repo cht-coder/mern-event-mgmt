@@ -1,9 +1,13 @@
-import { DeleteIcon, PencilIcon } from "@icons/material";
+import { DeleteIcon, ForumIcon, PencilIcon } from "@icons/material";
 import {
   Box,
   Button,
   Chip,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   IconButton,
   Stack,
   Table,
@@ -12,11 +16,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
+import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useAuthCtx } from "../contexts/AuthContext";
@@ -25,6 +32,9 @@ const EventList = () => {
   const { auth } = useAuthCtx();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+
   const {
     data: events,
     isLoading,
@@ -86,7 +96,9 @@ const EventList = () => {
           }}
         >
           <Box>
-            <Button href="./new">Add Event</Button>
+            <Button variant="contained" href="./new" disableElevation>
+              Add Event
+            </Button>
           </Box>
           {auth?.role === "ADMIN" && (
             <Box>
@@ -128,28 +140,40 @@ const EventList = () => {
                 </TableCell>
                 <TableCell>
                   <Stack sx={{ flexDirection: "row" }}>
-                    <IconButton
-                      sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
-                      onClick={() => navigate(`./${_id}/edit`)}
-                    >
-                      <PencilIcon />
-                    </IconButton>
-                    <IconButton
-                      sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
-                      onClick={() => {
-                        toast.promise(
-                          deleteEvent(_id),
-                          {
-                            loading: "loading",
-                            error: "error",
-                            success: "success",
-                          },
-                          { position: "bottom-left" }
-                        );
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                    <Tooltip title="Edit">
+                      <IconButton
+                        sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
+                        onClick={() => navigate(`./${_id}/edit`)}
+                      >
+                        <PencilIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
+                        onClick={() => {
+                          toast.promise(
+                            deleteEvent(_id),
+                            {
+                              loading: "loading",
+                              error: "error",
+                              success: "success",
+                            },
+                            { position: "bottom-left" }
+                          );
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Feedback">
+                      <IconButton
+                        sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
+                        onClick={() => setIsFeedbackOpen(true)}
+                      >
+                        <ForumIcon />
+                      </IconButton>
+                    </Tooltip>
                   </Stack>
                 </TableCell>
               </TableRow>
@@ -157,6 +181,39 @@ const EventList = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog
+        sx={{
+          width: "100%",
+          maxWidth: "md",
+          margin: "auto",
+          "& .MuiPaper-root": { width: "100%" },
+          "& .MuiDialogActions-root .MuiButton-root": { width: "auto" },
+        }}
+        open={isFeedbackOpen}
+      >
+        <DialogTitle>Feedback</DialogTitle>
+        <DialogContent>
+          <TextField
+            placeholder="How can we improve ?"
+            rows={5}
+            multiline
+            fullWidth
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsFeedbackOpen(false)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              toast.success("Thank you for your valuable feedback", {
+                position: "bottom-left",
+              });
+              setIsFeedbackOpen(false);
+            }}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

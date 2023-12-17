@@ -53,7 +53,7 @@ const AddEventForm = () => {
     defaultValues: {
       title: "",
       date: dayjs().format("YYYY-MM-DD"),
-      opts: { hall: true, dining: false },
+      opts: { hall: true, dining: true },
       cust: null,
     },
     resolver: yupResolver(eventSchema),
@@ -111,7 +111,6 @@ const AddEventForm = () => {
   });
 
   const onSubmit = (data) => mutation.mutate(data);
-  console.log(auth);
 
   return (
     <Box
@@ -181,15 +180,29 @@ const AddEventForm = () => {
         />
         <FormGroup sx={{ my: 2 }} row>
           <FormControlLabel
-            control={<Checkbox />}
+            control={
+              <Controller
+                name="opts.hall"
+                control={control}
+                render={({ field: { value, ...field } }) => (
+                  <Checkbox checked={value} {...field} />
+                )}
+              />
+            }
             label="Hall"
-            {...register("opts.hall")}
           />
 
           <FormControlLabel
-            control={<Checkbox />}
+            control={
+              <Controller
+                name="opts.dining"
+                control={control}
+                render={({ field: { value, ...field } }) => (
+                  <Checkbox checked={value} {...field} />
+                )}
+              />
+            }
             label="Dining"
-            {...register("opts.dining")}
           />
         </FormGroup>
         <Stack sx={{ flexDirection: "row", gap: ".25rem" }}>
