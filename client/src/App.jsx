@@ -11,10 +11,12 @@ import {
 } from "react-router-dom";
 import "./App.css";
 import cover from "./assets/images/11582499_21034617.jpg";
+import About from "./components/About";
 import AddEventForm from "./components/AddEvent";
 import AdminLoginForm from "./components/AdminLoginForm";
 import AdminRegistrationForm from "./components/AdminRegistration";
 import AppHeader from "./components/AppHeader";
+import Contact from "./components/Contact";
 import CustomerLoginForm from "./components/CustomerLoginForm";
 import CustomerRegistrationForm from "./components/CustomerRegistration";
 import EventList from "./components/EventList";
@@ -169,6 +171,8 @@ const AppRoutes = () => {
           {/* <Route index element={<EventList />} /> */}
           <Route path="new" element={<CustomerRegistrationForm />} />
         </Route>
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </>
   );

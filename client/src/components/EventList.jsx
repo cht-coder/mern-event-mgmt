@@ -168,14 +168,16 @@ const EventList = () => {
                         <DeleteIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Feedback">
-                      <IconButton
-                        sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
-                        onClick={() => setIsFeedbackOpen(true)}
-                      >
-                        <ForumIcon />
-                      </IconButton>
-                    </Tooltip>
+                    {auth?.role === "CUSTOMER" && (
+                      <Tooltip title="Feedback">
+                        <IconButton
+                          sx={{ width: 50, height: 50, fontSize: "0.85rem" }}
+                          onClick={() => setIsFeedbackOpen(true)}
+                        >
+                          <ForumIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                   </Stack>
                 </TableCell>
               </TableRow>

@@ -65,6 +65,15 @@ function AppHeader() {
             Marriage Events Planner
           </Typography>
 
+          <Box>
+            <Button sx={{ color: "#fff" }} href="/about">
+              About
+            </Button>
+            <Button sx={{ color: "#fff" }} href="/contact">
+              Contact
+            </Button>
+          </Box>
+
           {!!auth && (
             <Box sx={{ ml: "auto", mr: 0 }}>
               <Button
